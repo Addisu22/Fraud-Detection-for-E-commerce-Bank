@@ -63,7 +63,8 @@ def ip_to_int(ip):
 
 def merge_ip_geolocation(fraud_df, ip_df):
     try:
-        fraud_df['ip_int'] = (fraud_df['ip_address'].apply(ip_to_int).astype(int))
+        fraud_df['ip_int'] = fraud_df['ip_address'].apply(ip_to_int).astype(int)
+
         ip_df['lower_bound_ip_address'] = ip_df['lower_bound_ip_address'].apply(ip_to_int)
         ip_df['upper_bound_ip_address'] = ip_df['upper_bound_ip_address'].apply(ip_to_int)
 
