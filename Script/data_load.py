@@ -7,7 +7,7 @@ from sklearn.model_selection import train_test_split
 from sklearn.preprocessing import StandardScaler, OneHotEncoder
 from imblearn.over_sampling import SMOTE
 from imblearn.under_sampling import RandomUnderSampler
-
+from sklearn.preprocessing import MinMaxScaler
 
 
 # 1. Load and Clean Data
