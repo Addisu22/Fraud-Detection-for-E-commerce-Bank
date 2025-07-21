@@ -65,15 +65,22 @@ def ip_to_int(ip):
     try:
         return int(ipaddress.ip_address(ip))
     except:
-        return np.nan
+        return np.nan  # return NaN if conversion fails
 
 def merge_ip_geolocation(fraud_df, ip_df):
     try:
-        fraud_df['ip_int'] = fraud_df['ip_address'].apply(ip_to_int).astype(int)
-
+        # Convert IPs to integers with potential NaNs
+        fraud_df['ip_int'] = fraud_df['ip_address'].apply(ip_to_int)
         ip_df['lower_bound_ip_address'] = ip_df['lower_bound_ip_address'].apply(ip_to_int)
         ip_df['upper_bound_ip_address'] = ip_df['upper_bound_ip_address'].apply(ip_to_int)
 
+        # Drop rows with NaN IPs before converting to int
+        fraud_df = fraud_df.dropna(subset=['ip_int'])
+        fraud_df['ip_int'] = fraud_df['ip_int'].astype(int)
+
+        ip_df = ip_df.dropna(subset=['lower_bound_ip_address', 'upper_bound_ip_address'])
+
+        # Sort and merge
         merged_df = pd.merge_asof(
             fraud_df.sort_values('ip_int'),
             ip_df.sort_values('lower_bound_ip_address'),
@@ -81,13 +88,15 @@ def merge_ip_geolocation(fraud_df, ip_df):
             right_on='lower_bound_ip_address',
             direction='backward'
         )
+
         print("IP address merged with geolocation successfully.")
         return merged_df
+
     except Exception as e:
         print(f"Error merging IP geolocation: {e}")
         return fraud_df
-    
 
+  
 # 5. Feature Engineering
 def feature_engineering_fraud(df):
     try:
