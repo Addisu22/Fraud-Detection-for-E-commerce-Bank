@@ -47,6 +47,14 @@ def train_and_evaluate(X_train, X_test, y_train, y_test):
             print("F1-Score:", round(f1_score(y_test, y_pred), 4))
             print("AUC-PR:", round(average_precision_score(y_test, y_pred), 4))
             print("Confusion Matrix:\n", confusion_matrix(y_test, y_pred))
-            print("Classification Report:\n", classification_report(y_test, y_pred))
+            # print("Classification Report:\n", classification_report(y_test, y_pred))
+            
+            report = classification_report(y_pred, y_test, output_dict=True)
+            report_df = pd.DataFrame(report).transpose()
+            report_df.columns = report_df.columns.str.capitalize()
+            report_df.index = report_df.index.str.capitalize()
+            report_df.head()
+
+
     except Exception as e:
         print("Error during model training or evaluation:", e)
